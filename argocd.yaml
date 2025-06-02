@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sinplek8s
+  namespace: argocd  # Change this to your ArgoCD namespace
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/SanjithMohanan/Flask-GLAction-Argo.git'
+    targetRevision: HEAD
+    path: manifests
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: apps # Change this to your ArgoCD namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - PruneLast=true

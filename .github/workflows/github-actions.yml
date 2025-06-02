@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,12 +36,28 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          VERSION=v$(date +"%Y%m%d%H%M%S")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          docker build . -t sanjithmohanan/ghaction:$VERSION 
+          NEW_TAG=v$(date +"%Y%m%d%H%M%S")
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+          docker build . -t sanjithmohanan/ghaction:$NEW_TAG 
       
       - name: Push Docker Image
         run: |
-          docker push sanjithmohanan/ghaction:${{ env.VERSION }}
+          echo "Pushing Docker image with tag: ${{ env.NEW_TAG }}"
+          docker push sanjithmohanan/ghaction:${{ env.NEW_TAG }}
+
+      - name: Update Kubernetes manifest files
+        run: |          
+          sed -i "s|image: sanjithmohanan/ghaction:.*|image: sanjithmohanan/ghaction:${NEW_TAG}|" manifests/deployment.yaml
+          echo "---Updated Manifest---"
+          cat manifests/deployment.yaml
+      
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifests/deployment.yaml
+          git commit -m "Update manifest from GitHub Actions [ci skip]" || echo "No changes to commit"
+          git push
+
         
       

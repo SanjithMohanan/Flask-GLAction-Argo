@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghaction
+  namespace: apps
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ghaction
+  template:
+    metadata:
+      labels:
+        app: ghaction
+    spec:
+      containers:
+      - name: ghaction
+        image: sanjithmohanan/ghaction:latest
+        ports:
+        - containerPort: 80
