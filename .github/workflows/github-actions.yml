@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  lint:
+  docker-build-and-update-manifest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,8 +56,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add manifests/deployment.yaml
-          git commit -m "Update manifest from GitHub Actions [ci skip]" || echo "No changes to commit"
-          git push
+          git commit -m "Update manifest from GitHub Actions [ci skip]"
+          git push origin master
 
         
       
