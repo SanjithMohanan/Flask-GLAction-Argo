@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: ghaction
-        image: sanjithmohanan/ghaction:latest
+        image: sanjithmohanan/ghaction:v20250602013954
         ports:
         - containerPort: 80
